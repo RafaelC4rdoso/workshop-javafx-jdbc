@@ -23,19 +23,21 @@ import model.entities.Department;
 import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
-public class DepartmentFormController implements Initializable{
-	
+public class DepartmentFormController implements Initializable {
+
 	private Department entity;
+	
 	private DepartmentService service;
+	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
 	
-	@FXML 
+	@FXML
 	private TextField txtName;
 	
-	@FXML 
+	@FXML
 	private Label labelErrorName;
 	
 	@FXML
@@ -44,8 +46,8 @@ public class DepartmentFormController implements Initializable{
 	@FXML
 	private Button btCancel;
 	
-	public void setDepartment(Department dpEntity) {
-		this.entity = dpEntity;
+	public void setDepartment(Department entity) {
+		this.entity = entity;
 	}
 	
 	public void setDepartmentService(DepartmentService service) {
@@ -73,8 +75,8 @@ public class DepartmentFormController implements Initializable{
 		catch (ValidationException e) {
 			setErrorMessages(e.getErrors());
 		}
-		catch (DbException e ) {
-			Alerts.showAlert("Error saving object", "", e.getMessage(), AlertType.ERROR);
+		catch (DbException e) {
+			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
@@ -86,19 +88,24 @@ public class DepartmentFormController implements Initializable{
 
 	private Department getFormData() {
 		Department obj = new Department();
-		ValidationException exception = new ValidationException("Validation Error");
+		
+		ValidationException exception = new ValidationException("Validation error");
 		
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		
 		if (txtName.getText() == null || txtName.getText().trim().equals("")) {
 			exception.addError("name", "Field can't be empty");
 		}
 		obj.setName(txtName.getText());
+		
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
+		
 		return obj;
 	}
 
+	@FXML
 	public void onBtCancelAction(ActionEvent event) {
 		Utils.currentStage(event).close();
 	}
@@ -128,5 +135,4 @@ public class DepartmentFormController implements Initializable{
 			labelErrorName.setText(errors.get("name"));
 		}
 	}
-
 }
